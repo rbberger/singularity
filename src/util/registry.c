@@ -87,15 +87,16 @@ void singularity_registry_init(void) {
             } 
 
             if ( strncmp(string, "SINGULARITY_", 12) != 0 ) {
+                free(string);
                 continue;
             }
 
             tok = strchr(string, '=');
             *tok = '\0';
 
-            string += 12; // Move string over so that SINGULARITY_ is skipped over
-
-            singularity_registry_set(string, tok+1);
+            // Move string over so that SINGULARITY_ is skipped over
+            singularity_registry_set(string+12, tok+1);
+            free(string);
         }
     }
 }
@@ -121,6 +122,8 @@ char *singularity_registry_get(char *key) {
     }
     
     singularity_message(DEBUG, "Returning value from registry: '%s' = '%s'\n", upperkey, (char *)found->data);
+
+    free(upperkey);
 
     return(found->data ? (strdup(found->data)) : NULL);
 }
@@ -152,6 +155,8 @@ int singularity_registry_set(char *key, char *value) {
         }
     }
     singularity_message(DEBUG, "Returning singularity_registry_set(%s, %s) = 0\n", key, value);
+
+    free(upperkey);
 
     return(0);
 }
