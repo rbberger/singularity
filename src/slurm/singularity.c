@@ -161,6 +161,7 @@ static int setup_container(spank_t spank)
     int rc;
     struct image_object image;
     char *command = NULL;
+    char *image_name = NULL;
 
     if ((rc = setup_container_environment(spank)) != 0) { return rc; }
 
@@ -197,12 +198,14 @@ static int setup_container(spank_t spank)
 
     singularity_sessiondir();
 
-    image = singularity_image_init(singularity_registry_get("IMAGE")); 
+    image_name = singularity_registry_get("IMAGE");
+    image = singularity_image_init(image_name);
+    free(image_name);
 
-    if ( singularity_registry_get("WRITABLE") == NULL ) {
-        singularity_image_open(&image, O_RDONLY);
-    } else {
+    if ( singularity_registry_find("WRITABLE") ) {
         singularity_image_open(&image, O_RDWR);
+    } else {
+        singularity_image_open(&image, O_RDONLY);
     }  
 
     singularity_image_check(&image);
@@ -231,7 +234,8 @@ static int setup_container(spank_t spank)
     envar_set("SINGULARITY_SHELL", singularity_registry_get("SHELL"), 1);
 
     command = singularity_registry_get("COMMAND");
-    singularity_message(LOG, "USER=%s, IMAGE='%s', COMMAND='%s'\n", singularity_priv_getuser(), singularity_image_name(&image), singularity_registry_get("COMMAND"));
+    singularity_message(LOG, "USER=%s, IMAGE='%s', COMMAND='%s'\n", singularity_priv_getuser(), singularity_image_name(&image), command);
+    free(command);
 
     // At this point, the current process is in the runtime container environment.
     // Return control flow back to SLURM: when execv is invoked, it'll be done from
