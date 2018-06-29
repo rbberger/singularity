@@ -102,6 +102,34 @@ void singularity_registry_init(void) {
 }
 
 
+int singularity_registry_find(char *key) {
+    ENTRY *found;
+    char *upperkey;
+    int i = 0;
+    int len = strlength(key, MAX_KEY_LEN);
+
+    upperkey = (char *) malloc(len + 1);
+
+    singularity_registry_init();
+
+    for ( i = 0; i < len; ++i )
+        upperkey[i] = toupper(key[i]);
+    upperkey[len] = '\0';
+
+    int exists = hsearch_r(keypair(upperkey, NULL), FIND, &found, &htab);
+
+    if(exists) {
+        singularity_message(DEBUG, "Found key '%s' in registry\n", upperkey);
+    } else {
+        singularity_message(DEBUG, "Key '%s' not found in registry\n", upperkey);
+    }
+
+    free(upperkey);
+
+    return exists;
+}
+
+
 char *singularity_registry_get(char *key) {
     ENTRY *found;
     char *upperkey;

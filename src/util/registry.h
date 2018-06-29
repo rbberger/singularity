@@ -44,4 +44,7 @@ extern int singularity_registry_set(char *key, char *value);
 // is not currently set, it will return with NULL.
 extern char *singularity_registry_get(char *key);
 
+// Find key in the registry
+extern int singularity_registry_find(char *key);
+
 #endif /* __SINGULARITY_REGISTRY_H_ */
