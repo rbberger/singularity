@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 
     singularity_daemon_init();
 
-    if ( singularity_registry_get("WRITABLE") != NULL ) {
+    if ( singularity_registry_find("WRITABLE") ) {
         singularity_message(VERBOSE3, "Instantiating writable container image object\n");
         image = singularity_image_init(singularity_registry_get("IMAGE"), O_RDWR);
     } else {
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
         image = singularity_image_init(singularity_registry_get("IMAGE"), O_RDONLY);
     }
 
-    if ( singularity_registry_get("DAEMON_JOIN") == NULL ) {
+    if ( !singularity_registry_find("DAEMON_JOIN") ) {
         singularity_cleanupd();
 
         singularity_runtime_ns(SR_NS_ALL);
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
             singularity_message(ERROR, "Could not change directory to: %s\n", target_pwd);
             ABORT(255);
         }
-    } else if ( singularity_registry_get("CONTAIN") != NULL ) {
+    } else if ( singularity_registry_find("CONTAIN") ) {
         singularity_message(DEBUG, "Attempting to chdir to home: %s\n", singularity_priv_home());
         if ( chdir(singularity_priv_home()) != 0 ) {
             singularity_message(WARNING, "Could not chdir to home: %s\n", singularity_priv_home());

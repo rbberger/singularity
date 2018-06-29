@@ -51,7 +51,7 @@ int _singularity_runtime_enter_chroot(void) {
 
     singularity_message(VERBOSE, "Entering container file system root: %s\n", container_dir);
 
-    if ( singularity_registry_get("DAEMON_JOIN") == NULL ) {
+    if ( !singularity_registry_find("DAEMON_JOIN") ) {
         singularity_priv_escalate();
         if ( chdir(container_dir) < 0 ) {
             singularity_message(ERROR, "Could not chdir to file system root %s: %s\n", container_dir, strerror(errno));

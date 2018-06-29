@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
     singularity_runtime_autofs();
 
-    if ( singularity_registry_get("WRITABLE") != NULL ) {
+    if ( singularity_registry_find("WRITABLE") ) {
         singularity_message(VERBOSE3, "Instantiating writable container image object\n");
         image = singularity_image_init(singularity_registry_get("IMAGE"), O_RDWR);
     } else {

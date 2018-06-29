@@ -74,13 +74,13 @@ int main(int argc, char **argv) {
     singularity_registry_set("UNSHARE_PID", "1");
     singularity_registry_set("UNSHARE_IPC", "1");
 
-    if ( singularity_registry_get("INSTANCE_BOOT") != NULL ) {
+    if ( singularity_registry_find("INSTANCE_BOOT") ) {
         singularity_registry_set("CONTAIN", "1");
     }
 
     singularity_cleanupd();
 
-    if ( singularity_registry_get("WRITABLE") != NULL ) {
+    if ( singularity_registry_find("WRITABLE") ) {
         singularity_message(VERBOSE3, "Instantiating writable container image object\n");
         image = singularity_image_init(singularity_registry_get("IMAGE"), O_RDWR);
     } else {
@@ -123,7 +123,7 @@ int main(int argc, char **argv) {
 
     cleanupd_fd = atoi(singularity_registry_get("CLEANUPD_FD"));
 
-    if ( singularity_registry_get("INSTANCE_BOOT") != NULL ) {
+    if ( singularity_registry_find("INSTANCE_BOOT") ) {
         int pipes[2];
 
         if ( pipe2(pipes, O_CLOEXEC) < 0 ) {
