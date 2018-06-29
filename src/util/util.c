@@ -194,6 +194,8 @@ char *joinpath(const char * path1, const char * path2_in) {
         ABORT(255);
     }
 
+    free(tmp_path1);
+
     return(ret);
 }
 
